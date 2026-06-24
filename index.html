@@ -1,1 +1,212 @@
-<!doctype html><html lang="en"><head><script async src="https://www.googletagmanager.com/gtag/js?id=G-Y31W4VL1NZ"></script><script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-Y31W4VL1NZ")</script><meta charset="utf-8"/><link rel="shortcut icon" href="https://objectdrop.github.io/favicon.ico"/><meta name="description" content="We present ObjectDrop, a supervised method for object removal and insertion, leveraging a counterfactual dataset and bootstrap supervision to achieve photorealistic editing."><meta property="og:title" content="ObjectDrop: Bootstrapping Counterfactuals for Photorealistic Object Removal and Insertion"/><meta property="og:description" content="We present ObjectDrop, a supervised method for object removal and insertion, leveraging a counterfactual dataset and bootstrap supervision to achieve photorealistic editing."/><meta property="og:url" content="https://objectdrop.github.io/"/><meta property="og:image" content="assets/banner.png"/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/><meta name="twitter:title" content="ObjectDrop: Bootstrapping Counterfactuals for Photorealistic Object Removal and Insertion"><meta name="twitter:description" content="We present ObjectDrop, a supervised method for object removal and insertion, leveraging a counterfactual dataset and bootstrap supervision to achieve photorealistic editing."><meta name="twitter:image" content="assets/twitter_banner.png"><meta name="twitter:card" content="summary_large_image"><meta name="keywords" content="Diffusion, Bootstrap, Counterfactual, Image Editing, Editing, Inpainting, Object Removel, Generative, AI"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ObjectDrop</title><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"/><script defer="defer" src="/static/js/main.abe8d95a.js"></script></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div><script type="text/javascript">var sc_project=12996460,sc_invisible=1,sc_security="1ac6f8f7"</script><script type="text/javascript" src="https://www.statcounter.com/counter/counter.js" async></script><noscript><div class="statcounter"><a title="hit counter" href="https://statcounter.com/" target="_blank"><img class="statcounter" src="https://c.statcounter.com/12996460/0/1ac6f8f7/1/" alt="hit counter" referrerpolicy="no-referrer-when-downgrade"></a></div></noscript></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PhysPlan — Physics-Aware Video Generation via Agentic Planning</title>
+  <meta name="description" content="PhysPlan: a training-free framework for physics-aware video generation. A vision-language model plans physical causality as a Chain-of-Visual-Thought; Object-Centric Gradient Routing and Kinetic Intensity Profiling guide test-time optimization." />
+  <meta name="keywords" content="video generation, physics-aware, video diffusion, vision-language models, agentic planning, test-time optimization, training-free" />
+
+  <meta property="og:title" content="PhysPlan: Physics-Aware Video Generation via Agentic Planning" />
+  <meta property="og:description" content="Training-free, backbone-agnostic physics-aware video generation." />
+  <meta property="og:image" content="assets/twitter_banner.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PhysPlan: Physics-Aware Video Generation via Agentic Planning" />
+  <meta name="twitter:image" content="assets/twitter_banner.png" />
+
+  <link rel="shortcut icon" href="favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <a class="nav-brand" href="#top">Phys<span>Plan</span></a>
+  <nav class="nav-links">
+    <a href="#abstract">Abstract</a>
+    <a href="#method">Method</a>
+    <a href="#experiments">Experiments</a>
+    <a href="#bibtex">BibTeX</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="container">
+      <h1 class="hero-title" id="heroTitle"></h1>
+      <p class="hero-tagline" id="heroTagline"></p>
+      <div class="authors" id="authors"></div>
+      <div class="affiliations" id="affiliations"></div>
+      <div class="author-note" id="authorNote"></div>
+      <div class="cta-row" id="ctaRow"></div>
+    </div>
+  </section>
+
+  <!-- ===================== TEASER ===================== -->
+  <section class="section" style="border-top:none;padding-top:18px">
+    <div class="container">
+      <figure class="fig">
+        <div class="video-ph" data-video="assets/videos/teaser.mp4">
+          <span class="ph-play">▷</span>
+          <span class="ph-label">Teaser — <code>assets/videos/teaser.mp4</code></span>
+        </div>
+        <figcaption>PhysPlan generates physically plausible dynamics while keeping passive backgrounds unchanged.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===================== ABSTRACT + CONTRIBUTIONS ===================== -->
+  <section id="abstract" class="section">
+    <div class="container narrow">
+      <h2 class="section-title">Abstract</h2>
+      <p class="abstract" id="abstractText"></p>
+      <h3 class="subhead-sm" style="margin-top:34px">Contributions</h3>
+      <ol class="contrib-list" id="contribList"></ol>
+    </div>
+  </section>
+
+  <!-- ===================== METHOD ===================== -->
+  <section id="method" class="section section-alt">
+    <div class="container">
+      <h2 class="section-title">Method</h2>
+      <p class="section-lead">PhysPlan operates in two stages: an agentic planner reasons about physical causality and emits a Chain-of-Visual-Thought, then a training-free guidance stage renders it into video while routing optimization to active objects.</p>
+
+      <!-- Pipeline figure -->
+      <figure class="fig">
+        <div class="video-ph" style="aspect-ratio:21/9" data-img="assets/pipeline.png">
+          <span class="ph-play">▣</span>
+          <span class="ph-label">Pipeline figure — <code>assets/pipeline.png</code></span>
+          <span class="ph-hint">Drop your final Stage&nbsp;1 / Stage&nbsp;2 overview (the clearer supplementary version is recommended)</span>
+        </div>
+        <figcaption><b>Figure 1.</b> Overview of PhysPlan. Stage&nbsp;1 (agentic planning) extracts a multimodal guidance signal; Stage&nbsp;2 (graph-guided optimization) steers reverse diffusion.</figcaption>
+      </figure>
+
+      <div class="stage-row">
+        <div class="stage">
+          <div class="stage-num">Stage 1</div>
+          <h4>Agentic Physical Planning</h4>
+          <p>A vision-language model acts as a cognitive simulator: it parses the scene into a graph, predicts a causal sequence of physical state transitions, renders intermediate keyframes, and extracts kinematic masks, depth, and a kinetic-intensity profile.</p>
+        </div>
+        <div class="stage">
+          <div class="stage-num">Stage 2</div>
+          <h4>Training-Free Graph-Guided Optimization</h4>
+          <p>The extracted conditions steer the reverse diffusion process via masked spatial-trajectory and 3D structural-consistency losses, with Object-Centric Gradient Routing and a kinetics-aware schedule — no fine-tuning of the base model.</p>
+        </div>
+      </div>
+
+      <!-- Chain-of-Visual-Thought -->
+      <h3 class="subhead">Chain-of-Visual-Thought</h3>
+      <p>The planner decomposes a prompt into a sequence of grounded visual states. Select a step:</p>
+      <div class="stepper" id="stepper"></div>
+      <div class="stepper-detail" id="stepperDetail"></div>
+
+      <figure class="fig">
+        <div id="covtPanel" class="covt-panel"></div>
+        <figcaption><b>Figure 2.</b> A worked example: the planner advances physical state across keyframes, each grounded into a segmentation mask and depth map.</figcaption>
+      </figure>
+
+      <!-- Two key mechanisms -->
+      <h3 class="subhead">Key mechanisms</h3>
+
+      <h4 class="subhead-sm">Object-Centric Gradient Routing</h4>
+      <p>The test-time gradient is routed exclusively through the active-object region defined by the downsampled mask, so the passive background receives no update and is preserved exactly.</p>
+      <figure class="fig">
+        <div class="ocgr-panel" id="ocgrPanel"></div>
+        <figcaption><b>Figure 3.</b> Global guidance perturbs the entire latent (the background painting drifts); element-wise masking with <i>M</i> zeroes the gradient outside the active object, confining the update to the object and locking the background.</figcaption>
+      </figure>
+
+      <h4 class="subhead-sm" style="margin-top:40px">Kinetic Intensity Profiling</h4>
+      <p>The planner scores per-frame physical volatility. The guidance learning rate and step density scale with it, concentrating optimization on high-entropy events such as collisions and phase changes.</p>
+      <div class="kip-panel" id="kipPanel"></div>
+    </div>
+  </section>
+
+  <!-- ===================== EXPERIMENTS ===================== -->
+  <section id="experiments" class="section">
+    <div class="container">
+      <h2 class="section-title">Experiments</h2>
+
+      <!-- Qualitative -->
+      <h3 class="subhead">Qualitative comparisons</h3>
+      <p>Same prompt and initial frame, every method, one shared timeline. Select a scenario:</p>
+      <div class="domain-tabs" id="domainTabs"></div>
+      <div class="compare-grid" id="compareGrid"></div>
+      <div class="compare-controls" id="compareControls"></div>
+
+      <!-- PhyGenBench -->
+      <h3 class="subhead">Physical plausibility (PhyGenBench)</h3>
+      <div id="phygenChart"></div>
+      <div class="table-wrap" id="phygenTable"></div>
+
+      <h3 class="subhead">Physical plausibility (Physics-IQ)</h3>
+      <div class="table-wrap" id="physiqTable"></div>
+
+      <!-- VLM generalization -->
+      <h3 class="subhead">Generalization across vision-language models</h3>
+      <div id="vlmChart"></div>
+      <div class="table-wrap" id="vlmTable"></div>
+
+      <!-- VBench -->
+      <h3 class="subhead">Video quality (VBench)</h3>
+      <div id="vbenchRadar" style="max-width:440px;margin:0 auto 18px"></div>
+      <div class="table-wrap" id="vbenchTable"></div>
+
+      <!-- Ablation -->
+      <h3 class="subhead">Ablation study</h3>
+      <p id="ablationNote"></p>
+      <div id="ablationChart"></div>
+
+      <!-- User study -->
+      <h3 class="subhead">User study</h3>
+      <p id="userStudyNote" style="text-align:center"></p>
+      <div class="gauges" id="userStudy"></div>
+
+      <!-- Failure analysis -->
+      <h3 class="subhead">Failure analysis &amp; limitations</h3>
+      <p id="failNote"></p>
+      <div class="two-col">
+        <div class="table-wrap" id="failTable"></div>
+        <div id="longhorizonChart"></div>
+      </div>
+      <h4 class="subhead-sm">Representative failure cases</h4>
+      <figure class="fig">
+        <div class="video-ph" style="aspect-ratio:2/1" data-img="assets/failure.png">
+          <span class="ph-play">▣</span>
+          <span class="ph-label">Failure cases — <code>assets/failure.png</code></span>
+          <span class="ph-hint">Supplementary limitations figure: mask leakage · extreme fragmentation</span>
+        </div>
+        <figcaption><b>Failure modes.</b> Mask leakage on transparent/refractive objects, and extreme fragmentation that exceeds the capacity of the tracking masks.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===================== BIBTEX ===================== -->
+  <section id="bibtex" class="section section-alt">
+    <div class="container narrow">
+      <h2 class="section-title">BibTeX</h2>
+      <div class="bibtex-box">
+        <button class="copy-btn" id="copyBibtex">Copy</button>
+        <pre id="bibtexContent"></pre>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p id="footerLine"></p>
+    <p>Video assets are placeholders pending upload.</p>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" aria-label="Back to top">↑</button>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
