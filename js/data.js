@@ -22,19 +22,20 @@ const SITE = {
 
   // ---- Authors (TODO: add profile / homepage links via `link`) ---------------
   authors: [
-    { name: "Minh-Loi Nguyen",  aff: [1], link: "#" },
-    { name: "Xuan-Vu Le",       aff: [1], link: "#" },
-    { name: "Thanh-Toan Do",    aff: [2], link: "#" },
-    { name: "Tam V. Nguyen",    aff: [3], link: "#" },
-    { name: "Minh-Triet Tran",  aff: [1], link: "#" },
-    { name: "Trung-Nghia Le",   aff: [1], link: "#", note: "†" }
+    { name: "Minh-Loi Nguyen",  aff: [1, 2], link: "#", note: "*" },
+    { name: "Xuan-Vu Le",       aff: [1, 2], link: "#", note: "*" },
+    { name: "Thanh-Toan Do",    aff: [3], link: "#", note: "‡" },
+    { name: "Tam V. Nguyen",    aff: [4], link: "#" },
+    { name: "Minh-Triet Tran",  aff: [1, 2], link: "#" },
+    { name: "Trung-Nghia Le",   aff: [1, 2], link: "#", note: "†‡" }
   ],
   affiliations: [
-    { id: 1, name: "Ho Chi Minh City University of Science, Vietnam National University" },
-    { id: 2, name: "Monash University" },
-    { id: 3, name: "University of Dayton" }
+    { id: 1, name: "University of Science" },
+    { id: 2, name: "Vietnam National University, Ho Chi Minh City" },
+    { id: 3, name: "Monash University" },
+    { id: 4, name: "University of Dayton" }
   ],
-  authorNote: "† Corresponding author",
+  authorNote: "* Equal contribution  ·  † Corresponding author  ·  ‡ Co-supervisor",
 
   abstract:
     "Video diffusion models (VDMs) synthesize high-fidelity, photorealistic video, yet they fundamentally lack an " +
