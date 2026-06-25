@@ -20,22 +20,15 @@ const SITE = {
     bibtex: "#bibtex"
   },
 
-  // ---- Authors (TODO: add profile / homepage links via `link`) ---------------
+  // ---- Authors (anonymous submission version) --------------------------------
+  // Named metadata is intentionally omitted from served files for review.
   authors: [
-    { name: "Minh-Loi Nguyen",  aff: [1, 2], link: "#", note: "*" },
-    { name: "Xuan-Vu Le",       aff: [1, 2], link: "#", note: "*" },
-    { name: "Thanh-Toan Do",    aff: [3], link: "#", note: "‡" },
-    { name: "Tam V. Nguyen",    aff: [4], link: "#" },
-    { name: "Minh-Triet Tran",  aff: [1, 2], link: "#" },
-    { name: "Trung-Nghia Le",   aff: [1, 2], link: "#", note: "†‡" }
+    { name: "Anonymous Authors", aff: [1], link: "#" }
   ],
   affiliations: [
-    { id: 1, name: "University of Science" },
-    { id: 2, name: "Vietnam National University, Ho Chi Minh City" },
-    { id: 3, name: "Monash University" },
-    { id: 4, name: "University of Dayton" }
+    { id: 1, name: "Anonymous Institution" }
   ],
-  authorNote: "* Equal contribution  ·  † Corresponding author  ·  ‡ Co-supervisor",
+  authorNote: "Under double-blind review",
 
   abstract:
     "Video diffusion models (VDMs) synthesize high-fidelity, photorealistic video, yet they fundamentally lack an " +
@@ -299,10 +292,9 @@ const REPRO = [
   "Full config, prompts, and Algorithm 1 will be released with the code."
 ];
 
-const BIBTEX = `@article{nguyen2026physplan,
-  title   = {Physics-Aware Video Generation via Agentic Planning and Graph-Guided Optimization},
-  author  = {Nguyen, Minh-Loi and Le, Xuan-Vu and Do, Thanh-Toan and
-             Nguyen, Tam V. and Tran, Minh-Triet and Le, Trung-Nghia},
-  journal = {arXiv preprint},
-  year    = {2026}
+const BIBTEX = `@misc{anonymous2026physplan,
+  title  = {Physics-Aware Video Generation via Agentic Planning and Graph-Guided Optimization},
+  author = {Anonymous Authors},
+  note   = {Under double-blind review},
+  year   = {2026}
 }`;
