@@ -1,0 +1,9 @@
+# OS / editor
+.DS_Store
+.claude/
+.vscode/
+
+# Anything that may carry author identity must never enter this repo
+docs/
+*.pdf
+*.bak
