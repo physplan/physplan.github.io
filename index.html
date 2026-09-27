@@ -32,8 +32,8 @@
   <a class="nav-brand" href="#top">Phys<span>Plan</span></a>
   <nav class="nav-links">
     <a href="#abstract">Abstract</a>
-    <a href="#method">Method</a>
     <a href="#qualitative">Videos</a>
+    <a href="#method">Method</a>
     <a href="#results">Results</a>
     <a href="#bibtex">BibTeX</a>
   </nav>
@@ -53,80 +53,29 @@
     </div>
   </section>
 
-  <!-- ===================== TEASER (Figure 1) ===================== -->
-  <section class="section" style="border-top:none;padding-top:8px">
-    <div class="container wide">
+  <!-- ===================== TEASER ===================== -->
+  <section class="section teaser" style="border-top:none;padding-top:0">
+    <div class="container">
       <figure class="fig">
         <img class="fig-img" src="assets/paper/teaser.jpg" alt="Same words, different scenes: an ice cube melting on a watertight tray, an absorbent cloth, and in a glass of water." loading="eager" />
-        <figcaption><b>Same words, different scenes.</b> “An ice cube melting in the sun” says what occurs; the scene decides where the meltwater goes: it stays in a watertight tray, soaks into an absorbent cloth, and joins the water in a glass. PhysPlan plans on a state graph grounded in the input frame. Without grounding, the plan comes from the prompt alone and yields the same free puddle in every scene.</figcaption>
+        <figcaption><span class="fig-n">Figure 1.</span> <b>Same words, different scenes.</b> “An ice cube melting in the sun” says what occurs; the scene decides where the meltwater goes. PhysPlan plans on a state graph grounded in the input frame, so the water stays in the tray, soaks into the cloth, or joins the water in the glass. A plan from the prompt alone yields the same free puddle every time.</figcaption>
       </figure>
-      <div class="eff-grid highlight-grid" id="highlights"></div>
     </div>
   </section>
 
-  <!-- ===================== ABSTRACT + CONTRIBUTIONS ===================== -->
+  <!-- ===================== ABSTRACT ===================== -->
   <section id="abstract" class="section">
     <div class="container narrow">
       <h2 class="section-title">Abstract</h2>
       <p class="abstract" id="abstractText"></p>
-      <h3 class="subhead-sm" style="margin-top:34px">Contributions</h3>
-      <ol class="contrib-list" id="contribList"></ol>
-    </div>
-  </section>
-
-  <!-- ===================== METHOD ===================== -->
-  <section id="method" class="section section-alt">
-    <div class="container">
-      <h2 class="section-title">Method</h2>
-      <p class="section-lead">A phenomenon specified in words unfolds as sparse, local changes to the physical state of the observed scene: a few objects and relations change at a time, while the rest persists. PhysPlan therefore represents the phenomenon as changes to a state graph grounded in the observed frame, and lets the same graph decide what the guidance constrains.</p>
-
-      <h3 class="subhead">Two gaps in prompt-derived planning</h3>
-      <div class="stage-row" id="gaps"></div>
-
-      <h3 class="subhead">Overview</h3>
-      <figure class="fig">
-        <img class="fig-img" src="assets/paper/overview.png" alt="Overview of PhysPlan: GPSR builds an event chain of state graphs and keyframes; GTO guides a frozen VDM with graph-selected, region-weighted updates." loading="lazy" />
-        <figcaption><b>Overview.</b> <b>Top:</b> Grounded Physical State Reasoning (GPSR) grounds I₀ and w as a state graph and evolves it through verified edits εᵢ into an event chain, anchoring each state Gᵢ to a frame fᵢ; unedited objects are carried over (lock). Each keyframe Iᵢ is rendered from I₀ and the net edits ε̄ᵢ. <b>Bottom:</b> Graph-Guided Test-Time Optimization (GTO), shown for i = 1: the anchor selects <i>when</i> the clean estimate of the frozen VDM is compared with Iᵢ, the edit type selects <i>what</i> is measured, and the edited objects define <i>where</i> the gradient acts. The VDM fills in the motion between anchors.</figcaption>
-      </figure>
-      <p class="center-note">The two modules communicate only through an event chain <span class="math">e<sub>i</sub> = (G<sub>i−1</sub> →<sup>ε<sub>i</sub></sup> G<sub>i</sub>, f<sub>i</sub>)</span>. Each event specifies:</p>
-      <div class="www-row" id="www"></div>
-
-      <!-- GPSR -->
-      <h3 class="subhead" id="gpsr">① Grounded Physical State Reasoning</h3>
-      <p>Since VLMs are unreliable at quantitative physical reasoning, the edits are qualitative and verified by deterministic checks, and the VLM never regenerates a full state, so objects that should not change stay unchanged. Select a step:</p>
-      <div class="stepper" id="stepper"></div>
-      <div class="stepper-detail" id="stepperDetail"></div>
-
-      <figure class="fig">
-        <img class="fig-img" src="assets/paper/gpsr.png" alt="Grounded Physical State Reasoning: ground and decompose, evolve by typed edits with deterministic checks, and timing." loading="lazy" />
-        <figcaption><b>Grounded Physical State Reasoning.</b> (a) The VLM grounds the scene as G₀, including objects not mentioned in w, and decomposes the phenomenon into deltas with qualitative rules. (b) Each delta is translated into typed edits. Deterministic checks reject invalid proposals, here an edit to an object the delta does not name (coverage) and a new object without a source (lineage); the VLM retries, and only a passing proposal is committed, with all other nodes copied. (c) The share dᵢ of each event places its state at an anchor frame fᵢ.</figcaption>
-      </figure>
-
-      <h4 class="subhead-sm">Worked example: the event chain for “an ice cube melting in the sun”</h4>
-      <div class="chain-panel" id="chainPanel"></div>
-
-      <h4 class="subhead-sm" style="margin-top:36px">Deterministic checks</h4>
-      <div class="checks" id="checks"></div>
-
-      <!-- GTO -->
-      <h3 class="subhead" id="gto">② Graph-Guided Test-Time Optimization</h3>
-      <p>A keyframe contains more than the graph specifies, such as the exact contour of a puddle, and matching it pixel by pixel would impose these details on the video. PhysPlan compares the video with each keyframe only on the properties selected by the edits, and updates it only in the regions of the edited objects.</p>
-      <div class="gto-row" id="gtoSteps"></div>
-
-      <h4 class="subhead-sm" style="margin-top:36px">Each edit type selects what is measured</h4>
-      <p class="muted" style="margin-bottom:8px">Click an operator to see the guidance term it selects. All terms compare object-level summaries rather than pixels, so they ignore the exact contour drawn by the editor; a count term for every object keeps the VDM from losing or duplicating unchanged objects.</p>
-      <div class="op-panel" id="opPanel"></div>
-
-      <h4 class="subhead-sm" style="margin-top:36px">Implementation</h4>
-      <div class="impl-grid" id="impl"></div>
     </div>
   </section>
 
   <!-- ===================== QUALITATIVE ===================== -->
-  <section id="qualitative" class="section">
+  <section id="qualitative" class="section section-alt">
     <div class="container wide">
-      <h2 class="section-title">Qualitative comparisons</h2>
-      <p style="text-align:center">Same prompt and conditioning frame for every method, on one shared timeline. Pick a scenario:</p>
+      <h2 class="section-title">Qualitative Comparisons</h2>
+      <p class="section-lead">Same prompt and input frame for every method, played in sync.</p>
       <div class="domain-tabs" id="domainTabs"></div>
       <div class="compare-carousel">
         <button class="compare-arrow compare-arrow-left" id="compareArrowLeft" aria-label="Previous scenario">&#8249;</button>
@@ -139,61 +88,68 @@
         <p class="compare-note" id="compareNote"></p>
       </div>
       <div class="compare-controls" id="compareControls"></div>
+    </div>
+  </section>
 
-      <figure class="fig" style="margin-top:40px">
-        <img class="fig-img" src="assets/paper/qualitative.jpg" alt="Qualitative comparison: frames at matched times for a mechanics and a thermal scene." loading="lazy" />
-        <figcaption><b>Qualitative comparison.</b> Frames at matched times t/T for a mechanics (left) and a thermal (right) scene. Red marks a physical error, green the correct outcome: only PhysPlan keeps a single ball that lands in the crate, and only PhysPlan extinguishes the flame when the match enters the water.</figcaption>
+  <!-- ===================== METHOD ===================== -->
+  <section id="method" class="section">
+    <div class="container">
+      <h2 class="section-title">Method</h2>
+      <p class="section-lead">A phenomenon specified in words unfolds as sparse, local changes to the physical state of the observed scene. PhysPlan represents it as changes to a state graph grounded in the input frame, and lets the same graph decide what the guidance constrains.</p>
+
+      <h3 class="subhead">Motivation: two gaps in prompt-derived planning</h3>
+      <div class="stage-row" id="gaps"></div>
+
+      <h3 class="subhead">Overview</h3>
+      <figure class="fig">
+        <img class="fig-img" src="assets/paper/overview.png" alt="Overview of PhysPlan: GPSR builds an event chain of state graphs and keyframes; GTO guides a frozen VDM with graph-selected, region-weighted updates." loading="lazy" />
+        <figcaption><span class="fig-n">Figure 2.</span> <b>Top:</b> Grounded Physical State Reasoning turns the input frame and prompt into an event chain of state graphs, each anchored to a frame and rendered as a keyframe. <b>Bottom:</b> Graph-Guided Test-Time Optimization guides a frozen video diffusion model toward these keyframes; the VDM fills in the motion between anchors.</figcaption>
       </figure>
+      <p class="center-note">Each event in the chain specifies:</p>
+      <div class="www-row" id="www"></div>
+
+      <!-- GPSR -->
+      <h3 class="subhead" id="gpsr"><span class="sec-n">1</span>Grounded Physical State Reasoning</h3>
+      <p>A VLM grounds <em>every</em> object in the input frame as a state graph, including objects the prompt never mentions, and decomposes the phenomenon into physical deltas: which object changes, to what state, and by which qualitative rule. Each delta becomes a small set of typed edits (<code>UPDATE</code>, <code>LINK</code>/<code>UNLINK</code>, <code>SPAWN</code>, <code>CONSUME</code>) that are verified before they are committed. The VLM never rewrites the whole scene, so objects that should not change stay unchanged.</p>
+      <figure class="fig">
+        <img class="fig-img" src="assets/paper/gpsr.png" alt="Grounded Physical State Reasoning: ground and decompose, evolve by typed edits, and timing." loading="lazy" />
+        <figcaption><span class="fig-n">Figure 3.</span> (a) Grounding and decomposition into physical deltas. (b) Each delta is translated into typed edits; invalid proposals are rejected and retried, and all other nodes are copied. (c) Each event is placed at an anchor frame.</figcaption>
+      </figure>
+
+      <h4 class="subhead-sm">Worked example: “an ice cube melting in the sun”</h4>
+      <div class="chain-panel" id="chainPanel"></div>
+
+      <!-- GTO -->
+      <h3 class="subhead" id="gto"><span class="sec-n">2</span>Graph-Guided Test-Time Optimization</h3>
+      <p>A keyframe contains more than the graph specifies, such as the exact contour of a puddle. Instead of matching it pixel by pixel, PhysPlan compares the video with each keyframe only on the properties selected by the edits, and updates it only in the regions of the edited objects.</p>
+      <div class="gto-row" id="gtoSteps"></div>
+
+      <h4 class="subhead-sm" style="margin-top:36px">Each edit type selects what is measured</h4>
+      <div class="op-panel" id="opPanel"></div>
     </div>
   </section>
 
   <!-- ===================== RESULTS ===================== -->
   <section id="results" class="section section-alt">
-    <div class="container wide">
+    <div class="container">
       <h2 class="section-title">Results</h2>
+      <p class="section-lead">Training-free on top of CogVideoX-I2V-5B, compared with the strongest guided image-to-video methods.</p>
 
       <h3 class="subhead">Physical plausibility</h3>
       <div class="two-col">
-        <div><p class="chart-title">PhyGenBench average (PCA score)</p><div id="pgbChart"></div></div>
-        <div><p class="chart-title">Physics-IQ average</p><div id="piqChart"></div></div>
+        <div><p class="chart-title">PhyGenBench <span>(PCA score)</span></p><div id="pgbChart"></div></div>
+        <div><p class="chart-title">Physics-IQ <span>(score)</span></p><div id="piqChart"></div></div>
       </div>
-      <div class="table-wrap" id="mainTable"></div>
-      <p class="muted" id="mainCaption"></p>
-      <p>On PhyGenBench, the largest gains are in Material (+0.34), Mechanics (+0.33), and Thermal (+0.31), which are dominated by changes of object state that the graph expresses directly as edits. Frame Guidance, which matches the same keyframes as whole frames, does not improve over its base model (0.51 vs. 0.52), whereas PhysPlan gains +0.26 from them. On Physics-IQ, the largest gains are in Solid Mechanics (+15.2), Optics (+13.7), and Magnetism (+6.4), where the outcome depends on which objects move or change while the rest of these cluttered real scenes stays fixed; PhysPlan improves in every domain.</p>
+      <p class="result-note" id="plausNote"></p>
 
-      <h3 class="subhead">Visual quality</h3>
-      <p>Guidance could trade visual quality for plausibility. PhysPlan improves FID over its base model and Frame Guidance and reduces FVD by about 21% and 29%, which we attribute to the region-weighted update keeping the background stable.</p>
-      <div class="table-wrap narrow-table" id="perceptualTable"></div>
-      <div class="two-col" style="margin-top:22px;align-items:center">
-        <div id="vbenchRadar" style="max-width:440px;margin:0 auto"></div>
-        <div><p>On per-video VBench scores, PhysPlan raises the Quality Score from 83.05 to 84.88 and improves six of seven dimensions, most in Dynamic Degree (+6.11); it also exceeds closed-source VDMs in Quality Score and Dynamic Degree.</p><p class="muted">Radar: each axis is min–max normalized across all six methods in the table below.</p></div>
-      </div>
-      <div class="table-wrap" id="vbenchTable"></div>
-      <p class="muted" id="vbenchLegend"></p>
+      <h3 class="subhead">Visual quality, preference, and cost</h3>
+      <div class="eff-grid" id="qualityTiles"></div>
 
-      <h3 class="subhead">User study</h3>
-      <p id="userStudyNote" style="text-align:center"></p>
-      <div class="gauges" id="userStudy"></div>
-      <div class="table-wrap narrow-table" id="userTable"></div>
-
-      <h3 class="subhead">Ablation study (Physics-IQ)</h3>
-      <p id="ablationNote"></p>
+      <h3 class="subhead">Ablation: both gaps matter</h3>
       <div id="ablationChart"></div>
-      <div class="table-wrap" id="ablationTable"></div>
+      <p class="result-note" id="ablationNote"></p>
 
-      <h3 class="subhead">Failure analysis</h3>
-      <p id="failNote"></p>
-      <div class="table-wrap narrow-table" id="failTable"></div>
-
-      <h3 class="subhead">Cost</h3>
-      <p id="costNote"></p>
-      <div class="two-col">
-        <div class="table-wrap" id="runtimeTable"></div>
-        <div class="table-wrap" id="costTable"></div>
-      </div>
-
-      <h3 class="subhead">Limitations</h3>
-      <p id="limitations"></p>
+      <p class="paper-pointer">Per-domain results, VBench dimensions, the user-study protocol, failure analysis, and the full cost breakdown are in the paper.</p>
     </div>
   </section>
 

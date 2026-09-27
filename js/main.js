@@ -28,28 +28,11 @@
     return `<a class="btn ${l.primary ? "primary" : ""}" href="${href}" ${tgt} ${disabled}>${l.label}</a>`;
   }).join("");
 
-  $("#highlights").innerHTML = HIGHLIGHTS.map(h =>
-    `<div class="eff-cell"><div class="big">${h.big}</div><div class="small">${h.small}</div></div>`).join("");
-  $("#contribList").innerHTML = CONTRIBUTIONS.map(c => `<li>${c.title ? `<b>${c.title}</b>, ` : ""}${c.text}</li>`).join("");
-
   /* ========================= METHOD: gaps + WWW ========================= */
   $("#gaps").innerHTML = GAPS.map((g, i) =>
     `<div class="stage"><div class="stage-num">Gap ${i + 1}</div><h4>${g.title}</h4><p>${g.text}</p></div>`).join("");
   $("#www").innerHTML = WWW.map(w =>
     `<div class="www-card www-${w.k.toLowerCase()}"><div class="www-k">${w.k}</div><div class="www-from">← ${w.from}</div><p>${w.text}</p></div>`).join("");
-
-  /* ========================= GPSR STEPPER ========================= */
-  const stepper = $("#stepper"), stepperDetail = $("#stepperDetail");
-  stepper.innerHTML = GPSR_STEPS.map((s, i) =>
-    `${i ? '<span class="step-arrow">→</span>' : ""}<button class="step-btn" data-i="${i}"><span class="step-n">${i + 1}</span>${s.label} <span class="step-sym">${s.sym}</span></button>`
-  ).join("");
-  function showStep(i) {
-    $$(".step-btn", stepper).forEach((b, j) => b.classList.toggle("active", j === i));
-    const s = GPSR_STEPS[i];
-    stepperDetail.innerHTML = `<h5>${i + 1}. ${s.title}</h5><p>${s.desc}</p>`;
-  }
-  $$(".step-btn", stepper).forEach(b => b.addEventListener("click", () => showStep(+b.dataset.i)));
-  showStep(0);
 
   /* ========================= EVENT CHAIN EXPLORER ========================= */
   (function () {
@@ -108,14 +91,6 @@
     panel.addEventListener("click", () => { panel.dataset.touched = "1"; stop(); });
   })();
 
-  /* ========================= CHECKS ========================= */
-  $("#checks").innerHTML = `
-    <div class="check-grid">${CHECKS.map((c, i) => `
-      <div class="check-card"><div class="check-n">(${"i ii iii iv".split(" ")[i]})</div><b>${c.name}</b><p>${esc(c.text)}</p>
-        <div class="check-bar"><i style="width:${c.share}%"></i></div><div class="check-share">${c.share}% of violations</div></div>`).join("")}
-    </div>
-    <p class="muted" style="margin-top:12px"><b>${CHECK_STATS.first}%</b> of all edit sets pass at the first attempt and <b>${CHECK_STATS.retries}%</b> after retries (${CHECK_STATS.rejected}% rejected). Coverage is the most frequently violated check: the VLM most often edits an object that the delta does not name, or forgets one that it does, which is exactly the error the checks keep out of the state graph.</p>`;
-
   /* ========================= GTO ========================= */
   $("#gtoSteps").innerHTML = GTO_STEPS.map((g, i) => `
     <div class="gto-card"><img src="${g.img}" alt="${esc(g.cap)}"/><div class="gto-cap">${g.cap}</div>
@@ -140,7 +115,6 @@
     show(0);
   })();
 
-  $("#impl").innerHTML = IMPLEMENTATION.map(([k, v]) => `<div class="impl-cell"><div class="impl-k">${k}</div><div>${esc(v)}</div></div>`).join("");
 
   /* ========================= QUALITATIVE COMPARISONS ========================= */
   const domainTabs = $("#domainTabs"), compareGrid = $("#compareGrid");
@@ -199,135 +173,17 @@
     });
     el.classList.add("chart"); el.innerHTML = svg + `</svg>`;
   }
-  function radarChart(el, dims, series) {
-    const W = 380, R = 118, cx = W / 2, cy = W / 2, n = dims.length;
-    const ang = i => -Math.PI / 2 + (i / n) * 2 * Math.PI;
-    const pt = (i, r) => [cx + Math.cos(ang(i)) * R * r, cy + Math.sin(ang(i)) * R * r];
-    const rings = [.25, .5, .75, 1].map(r =>
-      `<polygon points="${dims.map((_, i) => pt(i, r).join(",")).join(" ")}" fill="none" class="grid-line"/>`).join("");
-    const spokes = dims.map((d, i) => {
-      const [x, y] = pt(i, 1), [lx, ly] = pt(i, 1.15);
-      return `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" class="grid-line"/><text class="bar-lbl" x="${lx}" y="${ly + 3}" text-anchor="middle">${d}</text>`;
-    }).join("");
-    const polys = series.map(s => {
-      const p = s.vals.map((v, i) => pt(i, Math.max(0.04, v)).join(",")).join(" ");
-      return `<polygon points="${p}" fill="${s.color}" fill-opacity="${s.ours ? .18 : .06}" stroke="${s.color}" stroke-width="${s.ours ? 2.4 : 1.4}" ${s.dash ? 'stroke-dasharray="4 3"' : ""}/>`;
-    }).join("");
-    el.classList.add("chart");
-    el.innerHTML = `<svg viewBox="0 0 ${W} ${W}">${rings}${spokes}${polys}</svg>
-      <div class="legend">${series.map(s => `<span><i style="background:${s.color}"></i> ${s.name}</span>`).join("")}</div>`;
-  }
-  const table = (el, head, body) =>
-    el.innerHTML = `<table class="data"><thead>${head}</thead><tbody>${body}</tbody></table>`;
-  const cls = r => r.ours ? "ours" : (r.base ? "base" : "");
-
-  /* ========================= TABLE 2 ========================= */
-  (function () {
-    const T = MAIN_TABLE, all = T.groups.flatMap(g => g.rows);
-    const bestP = T.pgbCols.map((_, c) => Math.max(...all.map(r => r.pgb[c])));
-    const bestQ = T.piqCols.map((_, c) => Math.max(...all.filter(r => r.piq).map(r => r.piq[c])));
-    const base = all.find(r => r.base);
-    const head = `<tr><th rowspan="2">Model</th><th colspan="${T.pgbCols.length}" class="grp-h">PhyGenBench</th><th colspan="${T.piqCols.length}" class="grp-h">Physics-IQ</th></tr>
-      <tr>${T.pgbCols.map(c => `<th>${c}</th>`).join("")}${T.piqCols.map(c => `<th>${c}</th>`).join("")}</tr>`;
-    let body = "";
-    T.groups.forEach((g, gi) => {
-      body += `<tr class="group-row"><td colspan="${1 + T.pgbCols.length + T.piqCols.length}">${g.name}</td></tr>`;
-      g.rows.forEach((r, ri) => {
-        body += `<tr class="${cls(r)}"><td class="${r.sub ? "sub" : ""}">${esc(r.model)}</td>` +
-          r.pgb.map((v, c) => `<td class="${v === bestP[c] ? "best" : ""}">${v.toFixed(2)}${r.ours && c === 4 ? ` <span class="gain">+${(v - base.pgb[4]).toFixed(2)}</span>` : ""}</td>`).join("");
-        if (r.piq) body += r.piq.map((v, c) => `<td class="${v === bestQ[c] ? "best" : ""}">${v.toFixed(1)}${r.ours && c === 5 ? ` <span class="gain">+${(v - base.piq[5]).toFixed(1)}</span>` : ""}</td>`).join("");
-        else if (gi === 0 && ri === 0) body += `<td colspan="${T.piqCols.length}" rowspan="${g.rows.length}" class="na">Physics-IQ is evaluated for I2V models only</td>`;
-        body += `</tr>`;
-      });
-    });
-    table($("#mainTable"), head, body);
-    $("#mainCaption").textContent = T.caption;
-
-    const i2v = T.groups.slice(1).flatMap(g => g.rows);
-    hBarChart($("#pgbChart"), i2v.map(r => ({ label: r.model, value: r.pgb[4], ours: r.ours, base: r.base })),
-      { max: 0.85, fmt: v => v.toFixed(2) });
-    hBarChart($("#piqChart"), i2v.map(r => ({ label: r.model, value: r.piq[5], ours: r.ours, base: r.base })),
-      { max: 42, fmt: v => v.toFixed(1) });
-  })();
-
-  /* ========================= TABLE 3 ========================= */
-  (function () {
-    const P = PERCEPTUAL, best = P.cols.map((_, c) => Math.min(...P.rows.map(r => r.v[c])));
-    table($("#perceptualTable"), `<tr><th>Model</th>${P.cols.map(c => `<th>${c}</th>`).join("")}</tr>`,
-      P.rows.map(r => `<tr class="${cls(r)}"><td>${r.m}</td>${r.v.map((v, c) => `<td class="${v === best[c] ? "best" : ""}">${v.toFixed(1)}</td>`).join("")}</tr>`).join(""));
-  })();
-
-  /* ========================= VBENCH ========================= */
-  (function () {
-    const { dims, groups, dimNames } = VBENCH, rows = groups.flatMap(g => g.rows);
-    const mins = dims.map((_, c) => Math.min(...rows.map(r => r.v[c])));
-    const maxs = dims.map((_, c) => Math.max(...rows.map(r => r.v[c])));
-    const norm = r => r.v.map((v, c) => (v - mins[c]) / (maxs[c] - mins[c] || 1));
-    const ours = rows.find(r => r.ours), base = rows.find(r => r.base);
-    radarChart($("#vbenchRadar"), dims, [
-      { name: base.m, vals: norm(base), color: GRAYD, dash: true },
-      { name: ours.m, vals: norm(ours), color: ACCENT, ours: true }
-    ]);
-    const best = dims.map((_, c) => Math.max(...rows.map(r => r.v[c])));
-    let body = "";
-    groups.forEach(g => {
-      body += `<tr class="group-row"><td colspan="${dims.length + 1}">${g.name}</td></tr>`;
-      body += g.rows.map(r => `<tr class="${cls(r)}"><td>${r.m}</td>` +
-        r.v.map((v, c) => `<td class="${v === best[c] ? "best" : ""}">${v.toFixed(2)}</td>`).join("") + `</tr>`).join("");
-    });
-    table($("#vbenchTable"), `<tr><th>Method</th>${dims.map(d => `<th title="${dimNames[d]}">${d} ↑</th>`).join("")}</tr>`, body);
-    $("#vbenchLegend").innerHTML = dims.map(d => `<b>${d}</b> ${dimNames[d]}`).join(" · ");
-  })();
-
-  /* ========================= USER STUDY ========================= */
-  $("#userStudyNote").textContent = `${USER_STUDY.n} participants · ${USER_STUDY.protocol}. 50% means no preference.`;
-  $("#userStudy").innerHTML = USER_STUDY.criteria.map((label, i) => {
-    const pct = USER_STUDY.pooled[i], r = 54, c = 2 * Math.PI * r, off = c * (1 - pct / 100);
-    return `<div class="gauge"><svg viewBox="0 0 132 132">
-        <circle class="g-track" cx="66" cy="66" r="${r}"/>
-        <circle class="g-fill" cx="66" cy="66" r="${r}" transform="rotate(-90 66 66)" stroke-dasharray="${c}" stroke-dashoffset="${c}" data-off="${off}"/>
-        <text class="g-pct" x="66" y="74" text-anchor="middle">${pct}%</text>
-      </svg><div class="g-label">${label}</div><div class="g-sub">prefer PhysPlan (pooled)</div></div>`;
-  }).join("");
-  table($("#userTable"), `<tr><th>Preference for PhysPlan</th>${USER_STUDY.criteria.map(c => `<th>${c}</th>`).join("")}</tr>`,
-    USER_STUDY.perBaseline.map(r => `<tr class="${r.pooled ? "ours" : ""}"><td>${r.vs}</td>${r.v.map(v => `<td>${v}%</td>`).join("")}</tr>`).join(""));
-
-  /* ========================= ABLATION ========================= */
-  (function () {
-    const A = ABLATION, full = A.full.v[5];
-    $("#ablationNote").innerHTML = A.note;
-    const rows = A.groups.flatMap(g => g.rows);
-    hBarChart($("#ablationChart"),
-      [{ label: A.full.name, value: full, ours: true }, ...rows.map(r => ({ label: `(${r.id}) ${r.name}`, value: r.v[5] }))],
-      { min: 20, max: 40, padL: 280, W: 760, fmt: (v, d) => d.ours ? v.toFixed(1) : `${v.toFixed(1)}  (−${(full - v).toFixed(1)})` });
-    let body = `<tr class="ours"><td>${A.full.name}</td>${A.full.v.map(v => `<td>${v.toFixed(1)}</td>`).join("")}</tr>`;
-    A.groups.forEach(g => {
-      body += `<tr class="group-row"><td colspan="${A.cols.length + 1}">${g.name}</td></tr>`;
-      body += g.rows.map(r => `<tr><td>(${r.id}) ${sub(r.name)}</td>${r.v.map((v, c) =>
-        `<td>${v.toFixed(1)}${c === 5 ? ` <span class="drop">−${(full - v).toFixed(1)}</span>` : ""}</td>`).join("")}</tr>`).join("");
-    });
-    table($("#ablationTable"), `<tr><th>Setting</th>${A.cols.map(c => `<th>${c} ↑</th>`).join("")}</tr>`, body);
-  })();
-
-  /* ========================= FAILURE ANALYSIS ========================= */
-  (function () {
-    const F = FAILURE_ATTR;
-    $("#failNote").textContent = F.note;
-    const maxCell = Math.max(...F.rows.flatMap(r => r.v));
-    table($("#failTable"), `<tr><th>Category</th>${F.cols.map(c => `<th>${c}</th>`).join("")}</tr>`,
-      F.rows.map(r => `<tr class="${r.avg ? "ours" : ""}"><td>${r.domain}</td>${r.v.map(v =>
-        `<td class="heat" style="background:color-mix(in srgb, ${ACCENT} ${Math.round(v / maxCell * 42)}%, transparent)">${v}%</td>`).join("")}</tr>`).join(""));
-  })();
-
-  /* ========================= COST ========================= */
-  $("#costNote").textContent = COST_NOTE;
-  table($("#runtimeTable"), `<tr><th>Stage</th><th class="left">Model</th><th>Time (s)</th></tr>`,
-    RUNTIME.map(r => r.group ? `<tr class="group-row"><td colspan="3">${r.group}</td></tr>`
-      : `<tr class="${r.total ? "ours" : ""}"><td>${r.stage}</td><td class="left">${r.model}</td><td>${r.t.toFixed(1)}</td></tr>`).join(""));
-  table($("#costTable"), `<tr><th>Method</th><th>Time (s)</th><th>Peak mem. (GB)</th><th>API cost</th></tr>`,
-    COST.map(r => `<tr class="${cls(r)}"><td>${r.m}</td><td>${r.t}</td><td>${r.mem}</td><td>${r.api}</td></tr>`).join(""));
-
-  $("#limitations").textContent = LIMITATIONS;
+  /* ========================= RESULTS ========================= */
+  hBarChart($("#pgbChart"), PLAUSIBILITY.map(r => ({ label: r.model, value: r.pgb, ours: r.ours, base: r.base })),
+    { min: 0.3, max: 0.8, padL: 180, W: 520, fmt: v => v.toFixed(2) });
+  hBarChart($("#piqChart"), PLAUSIBILITY.map(r => ({ label: r.model, value: r.piq, ours: r.ours, base: r.base })),
+    { min: 15, max: 40, padL: 180, W: 520, fmt: v => v.toFixed(1) });
+  $("#plausNote").innerHTML = PLAUSIBILITY_NOTE;
+  $("#qualityTiles").innerHTML = QUALITY_TILES.map(h =>
+    `<div class="eff-cell"><div class="big">${h.big}</div><div class="small">${h.small}</div></div>`).join("");
+  hBarChart($("#ablationChart"), ABLATION,
+    { min: 20, max: 40, padL: 300, W: 760, fmt: (v, d) => d.ours ? v.toFixed(1) : `${v.toFixed(1)}  (−${(ABLATION[0].value - v).toFixed(1)})` });
+  $("#ablationNote").innerHTML = ABLATION_NOTE;
 
   /* ========================= BIBTEX ========================= */
   $("#bibtexContent").textContent = BIBTEX;
@@ -360,11 +216,6 @@
   showComparison(0);
 
   /* ========================= INTERACTIONS ========================= */
-  const gio = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) { e.target.style.strokeDashoffset = e.target.dataset.off; gio.unobserve(e.target); }
-  }), { threshold: .4 });
-  $$(".g-fill").forEach(g => gio.observe(g));
-
   const navA = $$(".nav-links a"), secs = navA.map(a => $(a.getAttribute("href")));
   const spy = new IntersectionObserver(es => es.forEach(e => {
     if (e.isIntersecting) { const id = "#" + e.target.id; navA.forEach(a => a.classList.toggle("active", a.getAttribute("href") === id)); }
