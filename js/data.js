@@ -12,14 +12,12 @@ const SITE = {
 
   links: {
     paper: "#",
-    code: "#",
-    bibtex: "#bibtex"
+    code: "#"
   },
 
-  // ---- Authors (anonymous submission version) --------------------------------
-  authors: [
-    { name: "Anonymous Authors", aff: [], link: "" }
-  ],
+  // ---- Authors: kept empty while under double-blind review (page shared by the
+  // ICLR submission and the arXiv version). Add names/BibTeX after notification.
+  authors: [],
   affiliations: [],
   authorNote: "Paper under double-blind review",
 
@@ -177,11 +175,3 @@ const ABLATION_NOTE =
   "Physics-IQ average; each setting changes one component. Replacing the grounded state graph with a prompt-derived plan " +
   "costs 10.1 points, and matching whole keyframes instead of graph-selected properties costs 7.9.";
 
-const BIBTEX = `@inproceedings{anonymous2027physplan,
-  title     = {PhysPlan: Grounded Physical State Reasoning and Graph-Guided
-               Optimization for Physically Plausible Video Generation},
-  author    = {Anonymous},
-  booktitle = {Submitted to International Conference on Learning Representations},
-  year      = {2027},
-  note      = {Under review}
-}`;

@@ -14,12 +14,13 @@
   $("#abstractText").innerHTML = SITE.abstract;
   $("#footerLine").textContent = `${SITE.title}: ${SITE.subtitle}.`;
   $("#authors").innerHTML = SITE.authors.map(a => `<span class="author">${esc(a.name)}</span>`).join("");
+  if (!SITE.authors.length) $("#authors").style.display = "none";
+  if (!SITE.affiliations.length) $("#affiliations").style.display = "none";
   $("#affiliations").innerHTML = SITE.affiliations.map(f => `<span><sup>${f.id}</sup> ${esc(f.name)}</span>`).join("");
   $("#authorNote").textContent = SITE.authorNote;
   const linkDefs = [
     { k: "paper", label: "Paper", primary: true },
-    { k: "code", label: "Code" },
-    { k: "bibtex", label: "BibTeX" }
+    { k: "code", label: "Code" }
   ];
   $("#ctaRow").innerHTML = linkDefs.filter(l => SITE.links[l.k] != null).map(l => {
     const href = SITE.links[l.k];
@@ -184,15 +185,6 @@
   hBarChart($("#ablationChart"), ABLATION,
     { min: 20, max: 40, padL: 300, W: 760, fmt: (v, d) => d.ours ? v.toFixed(1) : `${v.toFixed(1)}  (−${(ABLATION[0].value - v).toFixed(1)})` });
   $("#ablationNote").innerHTML = ABLATION_NOTE;
-
-  /* ========================= BIBTEX ========================= */
-  $("#bibtexContent").textContent = BIBTEX;
-  $("#copyBibtex").addEventListener("click", () => {
-    navigator.clipboard.writeText(BIBTEX).then(() => {
-      const b = $("#copyBibtex"); b.textContent = "Copied"; b.classList.add("done");
-      setTimeout(() => { b.textContent = "Copy"; b.classList.remove("done"); }, 1600);
-    });
-  });
 
   /* ========================= MEDIA HYDRATION ========================= */
   function hydrateMedia() {

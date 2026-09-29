@@ -203,9 +203,6 @@ table.data td.best { color: var(--accent-dark); font-weight: 800; }
 .eff-cell .small { color: var(--text-dim); font-size: .8rem; margin-top: 4px; }
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: center; }
 
-/* ---------- BIBTEX ---------- */
-.bibtex-box { position: relative; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
-.bibtex-box pre { font-family: var(--mono); font-size: .82rem; color: var(--text-dim); overflow-x: auto; line-height: 1.7; }
 .copy-btn { position: absolute; top: 12px; right: 12px; background: var(--surface); border: 1px solid var(--border-strong); color: var(--text); padding: 5px 13px; border-radius: 7px; cursor: pointer; font-size: .8rem; font-weight: 600; }
 .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
 .copy-btn.done { color: var(--good); border-color: var(--good); }
